@@ -1,0 +1,68 @@
+[package]
+name = "apollo-os"
+version = "0.1.0"
+edition = "2021"
+authors = ["APOLLO Kernel Team"]
+description = "Byzantine-Resilient, Formally-Verified Microkernel OS"
+license = "GPL-3.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = false
+
+[profile.dev]
+opt-level = 0
+
+# No std library - bare metal kernel
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[[bin]]
+name = "apollo-kernel"
+path = "src/main.rs"
+crate-type = ["staticlib"]
+
+[dependencies]
+# Memory safety & low-level operations
+core = { version = "0.0.0", optional = true }
+alloc = { version = "0.0.0", optional = true }
+
+# Cryptography (for capability HMACs & signatures)
+sha2 = { version = "0.10", default-features = false }
+hmac = { version = "0.12", default-features = false }
+aes-gcm = { version = "0.10", default-features = false, features = ["aes"] }
+
+# Synchronization primitives
+parking_lot = { version = "0.12", features = ["nightly"], optional = true }
+spin = { version = "0.9", default-features = false }
+
+# Testing & Verification
+proptest = { version = "1.0", optional = true }
+quickcheck = { version = "1.0", optional = true }
+
+# Serialization for inter-process communication
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+postcard = { version = "1.0", default-features = false, features = ["alloc"] }
+
+# Logging & Debugging
+log = { version = "0.4", default-features = false }
+fern = { version = "0.6", optional = true }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[features]
+default = ["kernel-core"]
+kernel-core = []
+hypervisor = []
+testing = ["proptest", "quickcheck"]
+
+# Disable all unsafe code in safe mode
+safe-mode = []
+
+[build]
+# Compile for bare metal (x86-64)
+target = "x86_64-unknown-none"
