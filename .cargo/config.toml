@@ -1,21 +1,9 @@
 [build]
-# Target bare metal x86-64
 target = "x86_64-unknown-none"
 
 [target.x86_64-unknown-none]
-# Linker script for custom memory layout
 rustflags = [
     "-C", "link-arg=-Tsrc/linker.ld",
     "-C", "opt-level=3",
-    "-C", "target-feature=+crt-static",
-    # Stack overflow protection
     "-C", "overflow-checks=on",
-    # Enable CFI (Control Flow Integrity)
-    "-Z", "sanitizer=cfi",
 ]
-
-# LLVM passes for hardening
-[profile.release]
-panic = "abort"
-lto = "fat"
-codegen-units = 1
