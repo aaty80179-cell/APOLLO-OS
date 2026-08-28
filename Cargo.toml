@@ -15,7 +15,6 @@ strip = false
 [profile.dev]
 opt-level = 0
 
-# No std library - bare metal kernel
 [lib]
 crate-type = ["staticlib", "rlib"]
 
@@ -25,17 +24,10 @@ path = "src/main.rs"
 crate-type = ["staticlib"]
 
 [dependencies]
-# Cryptography (for capability HMACs & signatures)
 sha2 = { version = "0.10", default-features = false }
 hmac = { version = "0.12", default-features = false }
-
-# Synchronization primitives
 spin = { version = "0.9", default-features = false }
-
-# Serialization for inter-process communication
 postcard = { version = "1.0", default-features = false, features = ["alloc"] }
-
-# Logging & Debugging
 log = { version = "0.4", default-features = false }
 
 [features]
